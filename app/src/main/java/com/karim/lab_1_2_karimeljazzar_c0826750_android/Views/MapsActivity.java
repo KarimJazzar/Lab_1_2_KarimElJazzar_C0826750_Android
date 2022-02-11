@@ -1,6 +1,6 @@
-package com.karim.lab_1_2_karimeljazzar_c0826750_android;
+package com.karim.lab_1_2_karimeljazzar_c0826750_android.Views;
 
-import static com.karim.lab_1_2_karimeljazzar_c0826750_android.MainActivity.selectedProduct;
+import static com.karim.lab_1_2_karimeljazzar_c0826750_android.Views.MainActivity.selectedProduct;
 
 import android.Manifest;
 import android.content.Context;
@@ -12,8 +12,6 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-//import android.support.v4.content.ContextCompat;
-//import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,6 +21,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.karim.lab_1_2_karimeljazzar_c0826750_android.R;
 
 public class MapsActivity extends AppCompatActivity {
 
@@ -36,7 +35,8 @@ public class MapsActivity extends AppCompatActivity {
     private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            drawMarkerLocation(location, "My Location!");
+            LatLng productLocation = new LatLng(selectedProduct.getLatitude(), selectedProduct.getLongitude());
+            drawMarkerLocation(location, "My location!", productLocation);
             locationManager.removeUpdates(locationListener);
         }
 
@@ -131,9 +131,9 @@ public class MapsActivity extends AppCompatActivity {
                     location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 }
                 if (location != null) {
-                    drawMarkerLocation(location, "My location");
+
                     LatLng productLocation = new LatLng(selectedProduct.getLatitude(), selectedProduct.getLongitude());
-                    drawMarkerProduct(productLocation,"Product is here!");
+                    drawMarkerLocation(location, "My location!", productLocation);
                 }
             }
         } else {
@@ -152,9 +152,9 @@ public class MapsActivity extends AppCompatActivity {
         getCurrentLocation();
     }
 
-    private void drawMarkerLocation(Location location, String title) {
+    private void drawMarkerLocation(Location location, String title, LatLng latLngProduct) {
         if (this.googleMap != null) {
-            //googleMap.clear();
+            googleMap.clear();
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
@@ -162,21 +162,15 @@ public class MapsActivity extends AppCompatActivity {
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             googleMap.addMarker(markerOptions);
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+
+            MarkerOptions markerOptionsProduct = new MarkerOptions();
+            markerOptionsProduct.position(latLngProduct);
+            markerOptionsProduct.title("Product provided here!");
+            markerOptionsProduct.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+            googleMap.addMarker(markerOptionsProduct);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLngProduct));
         }
     }
 
-    private void drawMarkerProduct(LatLng latLng, String title) {
-        if (this.googleMap != null) {
-            //googleMap.clear();
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            markerOptions.title(title);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            googleMap.addMarker(markerOptions);
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-        }
-    }
 
 }

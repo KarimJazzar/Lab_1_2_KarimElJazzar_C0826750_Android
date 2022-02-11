@@ -1,16 +1,13 @@
-package com.karim.lab_1_2_karimeljazzar_c0826750_android;
+package com.karim.lab_1_2_karimeljazzar_c0826750_android.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -18,6 +15,7 @@ import android.widget.TextView;
 import com.karim.lab_1_2_karimeljazzar_c0826750_android.Adapter.ProductAdapter;
 import com.karim.lab_1_2_karimeljazzar_c0826750_android.Helper.DatabaseHelper;
 import com.karim.lab_1_2_karimeljazzar_c0826750_android.Models.ProductModel;
+import com.karim.lab_1_2_karimeljazzar_c0826750_android.R;
 
 import java.util.ArrayList;
 
@@ -131,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                         desc.setText(searchedProducts.get(position-1).getDescription());
                         longi.setText(String.valueOf(searchedProducts.get(position-1).getLongitude()));
                         lati.setText(String.valueOf(searchedProducts.get(position-1).getLatitude()));
+                        selectedProduct = searchedProducts.get(position-1);
                     }
                 });
                 return false;
@@ -142,6 +141,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 databaseHelper.deleteProduct(selectedProduct.getId());
                 reloadProducts();
+                desc.setText(products.get(0).getDescription());
+                longi.setText(String.valueOf(products.get(0).getLongitude()));
+                lati.setText(String.valueOf(products.get(0).getLatitude()));
+                selectedProduct = products.get(0);
             }
         });
 
@@ -175,6 +178,20 @@ public class MainActivity extends AppCompatActivity {
         desc.setText(products.get(0).getDescription());
         longi.setText(String.valueOf(products.get(0).getLongitude()));
         lati.setText(String.valueOf(products.get(0).getLatitude()));
+        selectedProduct = products.get(0);
+        searchProduct.setQuery("",false);
+        searchProduct.clearFocus();
+
+        productsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                desc.setText(products.get(position-1).getDescription());
+                longi.setText(String.valueOf(products.get(position-1).getLongitude()));
+                lati.setText(String.valueOf(products.get(position-1).getLatitude()));
+                selectedProduct = products.get(position-1);
+            }
+        });
+
     }
 
     private void reloadProducts(){
@@ -188,8 +205,8 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
         ProductAdapter productAdapter = new ProductAdapter(this, products);
         productsList.setAdapter(productAdapter);
-        desc.setText("");
-        longi.setText("");
-        lati.setText("");
+//        desc.setText("");
+//        longi.setText("");
+//        lati.setText("");
     }
 }

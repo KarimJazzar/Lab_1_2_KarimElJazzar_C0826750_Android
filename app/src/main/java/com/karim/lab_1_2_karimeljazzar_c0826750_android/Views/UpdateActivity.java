@@ -1,7 +1,7 @@
-package com.karim.lab_1_2_karimeljazzar_c0826750_android;
+package com.karim.lab_1_2_karimeljazzar_c0826750_android.Views;
 
-import static com.karim.lab_1_2_karimeljazzar_c0826750_android.MainActivity.databaseHelper;
-import static com.karim.lab_1_2_karimeljazzar_c0826750_android.MainActivity.selectedProduct;
+import static com.karim.lab_1_2_karimeljazzar_c0826750_android.Views.MainActivity.databaseHelper;
+import static com.karim.lab_1_2_karimeljazzar_c0826750_android.Views.MainActivity.selectedProduct;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.karim.lab_1_2_karimeljazzar_c0826750_android.R;
 
 public class UpdateActivity extends AppCompatActivity {
 
@@ -41,14 +43,32 @@ public class UpdateActivity extends AppCompatActivity {
 
 
                 if (name.isEmpty()) {
-                    editName.setError("name field cannot be empty");
+                    editName.setError("Name field cannot be empty");
                     editName.requestFocus();
                     return;
                 }
 
                 if (description.isEmpty()) {
-                    editDescription.setError("salary cannot be empty");
+                    editDescription.setError("Description cannot be empty");
                     editDescription.requestFocus();
+                    return;
+                }
+
+                if (price.isEmpty()) {
+                    editPrice.setError("Price cannot be empty");
+                    editPrice.requestFocus();
+                    return;
+                }
+
+                if (longitude.isEmpty()) {
+                    editLo.setError("Longitude cannot be empty");
+                    editLo.requestFocus();
+                    return;
+                }
+
+                if (latitude.isEmpty()) {
+                    editLa.setError("Latitude cannot be empty");
+                    editLa.requestFocus();
                     return;
                 }
 

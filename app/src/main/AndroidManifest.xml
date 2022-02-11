@@ -32,17 +32,17 @@
             android:value="AIzaSyCxlRHJ_R61wvn_ZHoF7-fAq7cYBv77V1M" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".Views.MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name=".AddActivity"
+            android:name=".Views.AddActivity"
             android:exported="false" />
         <activity
-            android:name=".UpdateActivity"
+            android:name=".Views.UpdateActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Views.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
