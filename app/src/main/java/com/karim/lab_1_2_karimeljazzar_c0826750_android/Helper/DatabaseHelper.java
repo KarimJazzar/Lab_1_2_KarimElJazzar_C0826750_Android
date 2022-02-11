@@ -32,9 +32,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_NAME + " varchar(20) NOT NULL, " +
                 COLUMN_Description + " varchar(255) NOT NULL," +
-                COLUMN_Price + " FLOAT, " +
-                COLUMN_Latitude + " FLOAT, " +
-                COLUMN_longitude + " FLOAT);";
+                COLUMN_Price + " FLOAT NOT NULL, " +
+                COLUMN_Latitude + " FLOAT NOT NULL, " +
+                COLUMN_longitude + " FLOAT NOT NULL);";
         db.execSQL(sql);
     }
 
@@ -63,6 +63,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void deleteAllProducts() {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.execSQL("DELETE FROM " + TABLE_NAME);
+    }
+
+    public boolean deleteProduct(int id) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        // the delete method associated to the SQLite database instance returns the number of rows affected
+        return sqLiteDatabase.delete(TABLE_NAME,
+                COLUMN_ID + "=?",
+                new String[]{String.valueOf(id)}) > 0;
+    }
+
+    public boolean updateProduct(int id, String name, String description, double price, double latitude, double longitude) {
+
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME, name);
+        contentValues.put(COLUMN_Description, description);
+        contentValues.put(COLUMN_Price, String.valueOf(price));
+        contentValues.put(COLUMN_Latitude, String.valueOf(latitude));
+        contentValues.put(COLUMN_longitude, String.valueOf(longitude));
+
+        return sqLiteDatabase.update(TABLE_NAME,
+                contentValues,
+                COLUMN_ID + "=?",
+                new String[]{String.valueOf(id)}) > 0;
     }
 }
 

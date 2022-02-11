@@ -2,19 +2,22 @@ package com.karim.lab_1_2_karimeljazzar_c0826750_android;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.karim.lab_1_2_karimeljazzar_c0826750_android.Adapter.ProductAdapter;
 import com.karim.lab_1_2_karimeljazzar_c0826750_android.Helper.DatabaseHelper;
 import com.karim.lab_1_2_karimeljazzar_c0826750_android.Models.ProductModel;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -22,6 +25,12 @@ public class MainActivity extends AppCompatActivity {
     ListView productsList;
     TextView longi,lati,desc;
     ArrayList<ProductModel> products;
+    SearchView searchProduct;
+    Button delete, update, add, map;
+    public static ProductModel selectedProduct;
+    public static DatabaseHelper databaseHelper;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
         desc = findViewById(R.id.productDesc);
         longi = findViewById(R.id.longit);
         lati = findViewById(R.id.lat);
+        searchProduct = findViewById(R.id.searchProduct);
+        delete = findViewById(R.id.deleteProduct);
+        update = findViewById(R.id.updateProduct);
+        add = findViewById(R.id.add);
+        map = findViewById(R.id.showMap);
 
         TextView textView = new TextView(this);
         textView.setText("ID                                Name                                Price");
@@ -39,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         products = new ArrayList<>();
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        databaseHelper = new DatabaseHelper(this);
         //databaseHelper.deleteAllProducts();
 
         Cursor cursor = databaseHelper.getProducts();
@@ -73,9 +87,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         databaseHelper.getWritableDatabase();
+        selectedProduct = products.get(0);
 
 
-        ProductAdapter productAdapter = new ProductAdapter(this, products,this);
+        ProductAdapter productAdapter = new ProductAdapter(this, products);
         productsList.setAdapter(productAdapter);
 
         desc.setText(products.get(0).getDescription());
@@ -88,8 +103,93 @@ public class MainActivity extends AppCompatActivity {
                 desc.setText(products.get(position-1).getDescription());
                 longi.setText(String.valueOf(products.get(position-1).getLongitude()));
                 lati.setText(String.valueOf(products.get(position-1).getLatitude()));
+                selectedProduct = products.get(position-1);
             }
         });
 
+        searchProduct.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                ArrayList<ProductModel> searchedProducts = new ArrayList<ProductModel>();
+
+                for(ProductModel product: products){
+                    if(product.getName().toLowerCase().contains(newText.toLowerCase()) || product.getDescription().toLowerCase().contains(newText.toLowerCase())){
+                        searchedProducts.add(product);
+                    }
+                }
+                ProductAdapter productAdapter = new ProductAdapter(getApplicationContext(), searchedProducts);
+                productsList.setAdapter(productAdapter);
+
+                productsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        desc.setText(searchedProducts.get(position-1).getDescription());
+                        longi.setText(String.valueOf(searchedProducts.get(position-1).getLongitude()));
+                        lati.setText(String.valueOf(searchedProducts.get(position-1).getLatitude()));
+                    }
+                });
+                return false;
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseHelper.deleteProduct(selectedProduct.getId());
+                reloadProducts();
+            }
+        });
+
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),UpdateActivity.class));
+            }
+        });
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),AddActivity.class));
+            }
+        });
+
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),MapsActivity.class));
+            }
+        });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        reloadProducts();
+        desc.setText(products.get(0).getDescription());
+        longi.setText(String.valueOf(products.get(0).getLongitude()));
+        lati.setText(String.valueOf(products.get(0).getLatitude()));
+    }
+
+    private void reloadProducts(){
+        products.clear();
+        Cursor cursor = databaseHelper.getProducts();
+        if(cursor.moveToFirst()){
+            do{
+                products.add(new ProductModel(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getDouble(3),cursor.getDouble(4),cursor.getDouble(5)));
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        ProductAdapter productAdapter = new ProductAdapter(this, products);
+        productsList.setAdapter(productAdapter);
+        desc.setText("");
+        longi.setText("");
+        lati.setText("");
     }
 }

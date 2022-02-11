@@ -21,11 +21,11 @@ public class ProductAdapter extends BaseAdapter {
     Activity activity;
 
     //constructor
-    public ProductAdapter(Context context, ArrayList<ProductModel>data, Activity a)
+    public ProductAdapter(Context context, ArrayList<ProductModel>data)
     {
         this.data=data;
         inflater=LayoutInflater.from(context);
-        activity = a;
+        //activity = a;
     }
     @Override
     public int getCount() {

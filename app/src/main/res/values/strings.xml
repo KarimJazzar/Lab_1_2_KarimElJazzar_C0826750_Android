@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Lab_1_2_KarimElJazzar_C0826750_Android</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>
